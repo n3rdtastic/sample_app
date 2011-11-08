@@ -89,7 +89,7 @@ describe User do
     it "should reject passwords that are too short" do
       short = "a" * 5
       short_password_user = User.new(
-        @attr.merge(:password => shor, :tpassword_confirmation => short))
+        @attr.merge(:password => short, :tpassword_confirmation => short))
       short_password_user.should_not be_valid
     end
     
