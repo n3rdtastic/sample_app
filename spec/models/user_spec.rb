@@ -141,6 +141,19 @@ describe User do
         matching_user.should == @user
       end
     end
+    
+    describe "authenticate_with_salt method" do
+      
+      it "should return nil on incorrect salt" do
+        wrong_salt_user = User.authenticate_with_salt(@user.id, "wrong_salt")
+        wrong_salt_user.should be_nil
+      end
+      
+      it "should return the user on correct salt" do
+        matching_user = User.authenticate_with_salt(@user.id, @user.salt)
+        matching_user.should == @user
+      end
+    end
   end # password encryption
 end
 
