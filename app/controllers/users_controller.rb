@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  # don't allow signed-in users to visit :new or :create pages
+  before_filter :anonymous_user, :only => [:new, :create]
   # require the user to be signed in to reach some pages
   before_filter :authenticate, :only => [:index, :edit, :update, :destroy]
   # restrict users to their own 'edit' and 'update' pages
@@ -50,8 +52,13 @@ class UsersController < ApplicationController
   end # update
   
   def destroy
-    User.find(params[:id]).destroy
-    flash[:success] = "User destroyed."
+    user = User.find(params[:id])
+    if !current_user?(user)
+      user.destroy
+      flash[:success] = "User destroyed."
+    else
+      flash[:error] = "You can't delete yourself."
+    end
     redirect_to users_path
   end
   
@@ -69,5 +76,9 @@ class UsersController < ApplicationController
 
     def admin_user
       redirect_to(root_path) unless current_user.admin?
+    end
+    
+    def anonymous_user
+      redirect_to(root_path) if signed_in?
     end
 end
