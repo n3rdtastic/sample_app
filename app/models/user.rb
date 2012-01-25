@@ -34,6 +34,10 @@ class User < ActiveRecord::Base
   # Add a 'before_save' callback to encrypt the password before saving to db
   before_save :encrypt_password
   
+  def feed
+    Micropost.where("user_id = ?", id)
+  end
+  
   # Return true if the user's password matches the submitted password.
   def has_password?(submitted_password)
     # Compare encrypted_password with the encrypted version of 
