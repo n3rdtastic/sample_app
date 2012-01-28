@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   # don't allow signed-in users to visit :new or :create pages
   before_filter :anonymous_user, :only => [:new, :create]
   # require the user to be signed in to reach some pages
-  before_filter :authenticate, :only => [:index, :edit, :update, :destroy]
+  before_filter :authenticate, :except => [:show, :new, :create]
   # restrict users to their own 'edit' and 'update' pages
   before_filter :correct_user, :only => [:edit, :update]
   # restrict destroying users to admins
@@ -61,6 +61,20 @@ class UsersController < ApplicationController
       flash[:error] = "You can't delete yourself."
     end
     redirect_to users_path
+  end
+  
+  def following
+    @title = "Following"
+    @user = User.find(params[:id])
+    @users = @user.following.paginate(:page => params[:page])
+    render 'show_follow'
+  end
+  
+  def followers
+    @title = "Followers"
+    @user = User.find(params[:id])
+    @users = @user.followers.paginate(:page => params[:page])
+    render 'show_follow'
   end
   
   
